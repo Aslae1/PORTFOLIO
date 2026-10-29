@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mika blows a kiss</title>
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --bg: #1b2150;
+    --bg-edge: #0d1030;
+    --muted: #d9cdf5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg: #1b2150; --bg-edge: #0d1030; --muted: #d9cdf5; }
+  }
+  :root[data-theme="dark"] { --bg: #1b2150; --bg-edge: #0d1030; --muted: #d9cdf5; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background-color: var(--bg);
+    background-image: radial-gradient(ellipse at 50% 42%, var(--bg) 0%, var(--bg) 45%, var(--bg-edge) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+    color: var(--muted);
+    position: relative;
+  }
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    opacity: .35;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .34  0 0 0 0 .16  0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='.22'/></svg>");
+  }
+  .stage {
+    width: min(96vw, 1200px, calc((100vh - 70px) * 1.41));
+    position: relative;
+    filter: drop-shadow(0 0 40px rgba(255, 150, 210, .22));
+  }
+  .stage svg { display: block; width: 100%; height: auto; overflow: visible; }
+  #fx { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  .kiss-btn { font: 600 15px/1 "Iowan Old Style", Georgia, serif; color: #2b1d4e; background: linear-gradient(135deg, #ffd1e8, #ffb3d9); border: 0; border-radius: 99px; padding: 11px 22px; cursor: pointer; box-shadow: 0 6px 20px rgba(255,130,190,.4); position: relative; z-index: 6; touch-action: manipulation; }
+  .kiss-btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+  body { cursor: pointer; }
+  .hint {
+    margin: 0;
+    padding: 0 16px;
+    font-size: 15px;
+    font-style: italic;
+    letter-spacing: .01em;
+    text-align: center;
+    position: relative;
+  }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+<svg id="stageSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 -50 1200 850" role="img" aria-label="Mika, a chibi manga girl, blowing a kiss that bursts into glitter">
+<defs>
+  <clipPath id="eyeClip"><path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z"/></clipPath>
+  <clipPath id="irisClip"><ellipse cx="0" cy="0" rx="92" ry="104"/></clipPath>
+  <clipPath id="irisClipHi"><ellipse cx="0" cy="0" rx="85" ry="97"/></clipPath>
+  <clipPath id="lidClip"><path d="M85 220 C120 105 225 55 312 55 C420 55 500 105 552 178 C540 186 530 190 520 195 C490 120 410 70 310 70 C230 70 130 120 85 220 Z"/></clipPath>
+  <filter id="soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="1.4"/></filter>
+  <filter id="halo" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="7"/></filter>
+  <filter id="blur3" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3"/></filter>
+  <filter id="blur8" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="8"/></filter>
+  <linearGradient id="gSclera" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#ece5d9"/><stop offset=".35" stop-color="#fdfbf6"/><stop offset="1" stop-color="#f1ebe1"/>
+  </linearGradient>
+  <radialGradient id="gCorner" cx=".5" cy=".5" r=".56">
+    <stop offset=".55" stop-color="#7a5058" stop-opacity="0"/><stop offset="1" stop-color="#7a5058" stop-opacity=".38"/>
+  </radialGradient>
+  <linearGradient id="gShadow" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1b0c26" stop-opacity=".68"/><stop offset=".22" stop-color="#1b0c26" stop-opacity=".36"/><stop offset=".46" stop-color="#1b0c26" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="gGloss" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </linearGradient>
+  <radialGradient id="gGlow" cx=".5" cy=".5" r=".5">
+    <stop offset="0" stop-color="#fff" stop-opacity=".7"/><stop offset="1" stop-color="#fff" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="gPupil" cx=".5" cy=".45" r=".55">
+    <stop offset="0" stop-color="#171024"/><stop offset=".7" stop-color="#07050c"/><stop offset="1" stop-color="#000"/>
+  </radialGradient>
+  <linearGradient id="gIris_g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#2b1058"/><stop offset=".5" stop-color="#7c50e2"/><stop offset="1" stop-color="#dcbcff"/>
+  </linearGradient>
+  <radialGradient id="gLimbal_g" cx=".5" cy=".5" r=".5">
+    <stop offset=".7" stop-color="#150626" stop-opacity="0"/><stop offset=".9" stop-color="#150626" stop-opacity=".55"/><stop offset="1" stop-color="#150626" stop-opacity=".95"/>
+  </radialGradient>
+  <radialGradient id="gCollar_g" cx=".5" cy=".5" r=".5">
+    <stop offset=".55" stop-color="#dcbcff" stop-opacity="0"/><stop offset=".68" stop-color="#dcbcff" stop-opacity=".42"/><stop offset="1" stop-color="#dcbcff" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gLow_g" gradientUnits="userSpaceOnUse" x1="85" y1="0" x2="520" y2="0">
+    <stop offset="0" stop-color="#2a1830" stop-opacity="0"/><stop offset=".2" stop-color="#2a1830" stop-opacity=".85"/><stop offset=".8" stop-color="#2a1830" stop-opacity=".9"/><stop offset="1" stop-color="#2a1830" stop-opacity=".25"/>
+  </linearGradient>
+  <linearGradient id="gCrease_g" gradientUnits="userSpaceOnUse" x1="105" y1="0" x2="528" y2="0">
+    <stop offset="0" stop-color="#7a5070" stop-opacity="0"/><stop offset=".3" stop-color="#7a5070" stop-opacity=".7"/><stop offset=".75" stop-color="#7a5070" stop-opacity=".7"/><stop offset="1" stop-color="#7a5070" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="gBrow_g" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#45296a" stop-opacity=".8"/><stop offset=".3" stop-color="#45296a"/><stop offset="1" stop-color="#45296a" stop-opacity=".45"/>
+  </linearGradient>
+  <linearGradient id="gIris_b" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0c3f4a"/><stop offset=".5" stop-color="#1ea3a8"/><stop offset="1" stop-color="#aaf4ea"/>
+  </linearGradient>
+  <radialGradient id="gLimbal_b" cx=".5" cy=".5" r=".5">
+    <stop offset=".7" stop-color="#04262c" stop-opacity="0"/><stop offset=".9" stop-color="#04262c" stop-opacity=".55"/><stop offset="1" stop-color="#04262c" stop-opacity=".95"/>
+  </radialGradient>
+  <radialGradient id="gCollar_b" cx=".5" cy=".5" r=".5">
+    <stop offset=".55" stop-color="#aaf4ea" stop-opacity="0"/><stop offset=".68" stop-color="#aaf4ea" stop-opacity=".42"/><stop offset="1" stop-color="#aaf4ea" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="gLow_b" gradientUnits="userSpaceOnUse" x1="85" y1="0" x2="520" y2="0">
+    <stop offset="0" stop-color="#121a2a" stop-opacity="0"/><stop offset=".2" stop-color="#121a2a" stop-opacity=".85"/><stop offset=".8" stop-color="#121a2a" stop-opacity=".9"/><stop offset="1" stop-color="#121a2a" stop-opacity=".25"/>
+  </linearGradient>
+  <linearGradient id="gCrease_b" gradientUnits="userSpaceOnUse" x1="105" y1="0" x2="528" y2="0">
+    <stop offset="0" stop-color="#3a4560" stop-opacity="0"/><stop offset=".3" stop-color="#3a4560" stop-opacity=".7"/><stop offset=".75" stop-color="#3a4560" stop-opacity=".7"/><stop offset="1" stop-color="#3a4560" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="gBrow_b" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#141f44" stop-opacity=".8"/><stop offset=".3" stop-color="#141f44"/><stop offset="1" stop-color="#141f44" stop-opacity=".45"/>
+  </linearGradient>
+  <linearGradient id="hairG_g" x1="0" y1="-262" x2="0" y2="250" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#5a3fc0"/><stop offset=".3" stop-color="#8a69ee"/><stop offset=".55" stop-color="#a98cf6"/><stop offset="1" stop-color="#8f74ea"/>
+  </linearGradient>
+  <linearGradient id="hairG_b" x1="0" y1="-262" x2="0" y2="180" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#16214f"/><stop offset=".4" stop-color="#26397f"/><stop offset="1" stop-color="#3a51a6"/>
+  </linearGradient>
+  <linearGradient id="hiBandG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity=".9"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+  <radialGradient id="skinG_g" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#fff0e6"/><stop offset=".7" stop-color="#fbe0d0"/><stop offset="1" stop-color="#f3cbb8"/></radialGradient>
+  <radialGradient id="skinG_b" cx=".5" cy=".42" r=".65"><stop offset="0" stop-color="#fde8d8"/><stop offset=".7" stop-color="#f7d6c2"/><stop offset="1" stop-color="#eebda6"/></radialGradient>
+  <linearGradient id="faceShadeG" x1="0" y1="0" x2="0" y2="1" gradientUnits="objectBoundingBox">
+    <stop offset="0" stop-color="#b56f68" stop-opacity=".5"/><stop offset=".3" stop-color="#b56f68" stop-opacity=".16"/><stop offset=".45" stop-color="#b56f68" stop-opacity="0"/>
+  </linearGradient>
+  <linearGradient id="neckG_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9a48f"/><stop offset=".45" stop-color="#f6d3c1"/><stop offset="1" stop-color="#f6d3c1"/></linearGradient>
+  <linearGradient id="neckG_b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#cf9a83"/><stop offset=".45" stop-color="#f0c8b2"/><stop offset="1" stop-color="#f0c8b2"/></linearGradient>
+  <linearGradient id="topG_g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#34417a"/><stop offset="1" stop-color="#242e5c"/></linearGradient>
+  <linearGradient id="topG_b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a4262"/><stop offset="1" stop-color="#262d47"/></linearGradient>
+  <linearGradient id="ribG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff9aa0"/><stop offset="1" stop-color="#ef6672"/></linearGradient>
+  <linearGradient id="tieG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#27a7a2"/><stop offset="1" stop-color="#17726f"/></linearGradient>
+  <linearGradient id="fadeG" gradientUnits="userSpaceOnUse" x1="0" y1="470" x2="0" y2="548">
+    <stop offset="0" stop-color="#fff"/><stop offset="1" stop-color="#000"/>
+  </linearGradient>
+  <mask id="fade" maskUnits="userSpaceOnUse" x="-600" y="-600" width="1200" height="1300">
+    <rect x="-600" y="-600" width="1200" height="1300" fill="url(#fadeG)"/>
+  </mask><g id="handShape">
+    <path d="M-27 6 C-37 -18 -35 -44 -25 -58 L25 -58 C36 -44 38 -18 28 6 Z"/>
+    <rect x="-24.5" y="-96" width="12.5" height="48" rx="6.25" transform="rotate(-5 -18 -50)"/>
+    <rect x="-12" y="-102" width="12.5" height="54" rx="6.25"/>
+    <rect x="0.5" y="-96" width="12.5" height="48" rx="6.25" transform="rotate(4 6 -50)"/>
+    <rect x="13" y="-88" width="12.5" height="40" rx="6.25" transform="rotate(10 19 -50)"/>
+    <rect x="-9" y="-40" width="14" height="40" rx="7" transform="translate(-24 -6) rotate(-50)"/>
+  </g>
+  <linearGradient id="sleeveG" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3a4a8c"/><stop offset=".55" stop-color="#2d3a72"/><stop offset="1" stop-color="#2d3a72" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<g id="mika" transform="translate(600 402) scale(.95)">
+<g id="gChar" class="char" data-pal="g">
+<g class="hs" transform="scale(1.2)">
+  <g class="hairBack">
+    <path d="M-208 -40 C-232 -190 -130 -262 0 -262 C130 -262 232 -190 208 -40 C226 60 222 160 192 222 C176 252 128 252 104 232 L96 120 L-96 120 L-104 232 C-128 252 -176 252 -196 222 C-228 160 -232 60 -212 -40 Z" fill="url(#hairG_g)" stroke="#3d2a8a" stroke-width="3" stroke-linejoin="round"/>
+    <path d="M-190 60 C-196 120 -190 170 -170 210 M190 60 C196 120 190 170 170 210" fill="none" stroke="#fff" stroke-opacity=".22" stroke-width="6" stroke-linecap="round" filter="url(#blur3)"/>
+  </g>
+</g>
+
+<g class="bs" transform="translate(0 134) scale(.52)">
+  <g class="body" mask="url(#fade)">
+    <path d="M-50 140 L-50 300 C-50 332 50 332 50 300 L50 140 Z" fill="url(#neckG_g)"/>
+    <ellipse cx="0" cy="212" rx="40" ry="22" fill="#b9765f" opacity=".55" filter="url(#blur8)"/>
+    <path d="M-62 288 C-130 300 -258 322 -272 430 L-276 560 L276 560 L272 430 C258 322 130 300 62 288 C40 310 -40 310 -62 288 Z" fill="url(#topG_g)"/>
+    <path d="M-40 294 L0 396 L40 294 C20 306 -20 306 -40 294 Z" fill="#f7d8c7"/>
+    <path d="M-132 300 C-90 288 -52 286 -40 294 L0 396 L40 294 C52 286 90 288 132 300 L176 372 C120 372 70 392 0 448 C-70 392 -120 372 -176 372 Z" fill="#fbf3e3" stroke="#d9cbb0" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M-160 358 C-108 358 -62 378 0 432 C62 378 108 358 160 358" fill="none" stroke="#2e3a6e" stroke-width="5" stroke-linecap="round"/>
+    <path d="M-150 372 C-104 372 -60 392 0 444 C60 392 104 372 150 372" fill="none" stroke="#2e3a6e" stroke-width="2.5" stroke-linecap="round"/>
+    <path d="M-6 402 C-50 366 -100 376 -96 412 C-92 444 -46 430 -6 408 Z" fill="url(#ribG)" stroke="#c94a58" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M6 402 C50 366 100 376 96 412 C92 444 46 430 6 408 Z" fill="url(#ribG)" stroke="#c94a58" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M-10 414 L-34 476 L-10 464 L0 420 Z M10 414 L34 476 L10 464 L0 420 Z" fill="#ef6b78" stroke="#c94a58" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="-15" y="386" width="30" height="32" rx="9" fill="#ff8a90" stroke="#c94a58" stroke-width="2"/>
+  </g>
+</g>
+
+<g class="hs" transform="scale(1.2)">
+  <g class="head">
+    <path d="M-176 -20 C-176 -125 -100 -190 0 -190 C100 -190 176 -125 176 -20 C176 100 108 192 0 192 C-108 192 -176 100 -176 -20 Z" fill="url(#skinG_g)"/>
+    <path d="M-176 -20 C-176 -125 -100 -190 0 -190 C100 -190 176 -125 176 -20 C176 100 108 192 0 192 C-108 192 -176 100 -176 -20 Z" fill="url(#faceShadeG)"/>
+    <g class="blush" opacity=".35" transform="translate(0 34) scale(1 1.15)">
+      <ellipse cx="-104" cy="92" rx="46" ry="21" fill="#ff7f9a" filter="url(#blur8)"/>
+      <ellipse cx="104" cy="92" rx="46" ry="21" fill="#ff7f9a" filter="url(#blur8)"/>
+      <g stroke="#ff5f84" stroke-width="3" stroke-linecap="round" opacity=".7">
+        <path d="M-132 84 l-9 20 M-114 82 l-9 20 M-96 82 l-9 20"/>
+        <path d="M96 82 l-9 20 M114 82 l-9 20 M132 84 l-9 20" transform="translate(0 0)"/>
+      </g>
+    </g>
+    <g class="eye eyeL" transform="translate(-86 62) scale(-0.325 0.325) translate(-303 -178)">
+<g class="brow"><path d="M100 6 C160 -14 260 -26 366 -18 C424 -14 470 0 505 20 C462 4 418 -4 360 -6 C270 -10 190 0 136 16 C120 20 104 16 100 6 Z" fill="url(#gBrow_g)"/></g>
+<g class="blink">
+  <g clip-path="url(#eyeClip)">
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gSclera)"/>
+    <ellipse cx="102" cy="224" rx="17" ry="12" fill="#e9989a" opacity=".6"/>
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gCorner)"/>
+    <g class="iris" transform="translate(303 178)">
+      <g clip-path="url(#irisClip)">
+        <ellipse rx="92" ry="104" fill="url(#gIris_g)"/>
+        <g class="fibers"><line x1="38.4" y1="0" x2="83.8" y2="0.1" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.8" stroke-linecap="round"/><line x1="38.4" y1="1.2" x2="83.8" y2="2.6" stroke="#150626" stroke-opacity="0.26" stroke-width="2.3" stroke-linecap="round"/><line x1="39.8" y1="4.5" x2="85.3" y2="9.7" stroke="#150626" stroke-opacity="0.19" stroke-width="1.3" stroke-linecap="round"/><line x1="36.1" y1="6.2" x2="82.2" y2="14.1" stroke="#150626" stroke-opacity="0.30" stroke-width="1.8" stroke-linecap="round"/><line x1="41.3" y1="9.7" x2="87.1" y2="20.4" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.9" stroke-linecap="round"/><line x1="31.7" y1="9" x2="84.6" y2="24.1" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.1" stroke-linecap="round"/><line x1="34.2" y1="13.2" x2="78" y2="30.1" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.1" stroke-linecap="round"/><line x1="38.7" y1="17.9" x2="72.2" y2="33.3" stroke="#150626" stroke-opacity="0.16" stroke-width="2.3" stroke-linecap="round"/><line x1="35" y1="17.6" x2="68.5" y2="34.5" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.0" stroke-linecap="round"/><line x1="28.9" y1="17" x2="70.6" y2="41.5" stroke="#ffffff" stroke-opacity="0.32" stroke-width="1.6" stroke-linecap="round"/><line x1="31.4" y1="20.4" x2="60" y2="39" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.2" stroke-linecap="round"/><line x1="32.7" y1="23.4" x2="65.1" y2="46.5" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.0" stroke-linecap="round"/><line x1="31.8" y1="26.5" x2="57.3" y2="47.8" stroke="#150626" stroke-opacity="0.24" stroke-width="2.5" stroke-linecap="round"/><line x1="30.2" y1="28.9" x2="60.1" y2="57.4" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.6" stroke-linecap="round"/><line x1="28.7" y1="28.5" x2="51.2" y2="50.9" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.5" stroke-linecap="round"/><line x1="23.8" y1="25.7" x2="63.2" y2="68.2" stroke="#ffffff" stroke-opacity="0.21" stroke-width="1.0" stroke-linecap="round"/><line x1="26.3" y1="33.2" x2="60.6" y2="76.7" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.9" stroke-linecap="round"/><line x1="23.7" y1="33.4" x2="44.1" y2="62.1" stroke="#ffffff" stroke-opacity="0.24" stroke-width="2.6" stroke-linecap="round"/><line x1="19.4" y1="31" x2="41.3" y2="66" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.4" stroke-linecap="round"/><line x1="19.1" y1="35.2" x2="45.9" y2="84.5" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.3" stroke-linecap="round"/><line x1="18.6" y1="37.3" x2="41.4" y2="83" stroke="#150626" stroke-opacity="0.33" stroke-width="1.4" stroke-linecap="round"/><line x1="18.4" y1="38.4" x2="37.1" y2="77.4" stroke="#150626" stroke-opacity="0.35" stroke-width="2.5" stroke-linecap="round"/><line x1="12.6" y1="33.3" x2="31.1" y2="82.4" stroke="#ffffff" stroke-opacity="0.23" stroke-width="2.1" stroke-linecap="round"/><line x1="11.2" y1="33.9" x2="28.4" y2="85.6" stroke="#150626" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="11" y1="35.2" x2="31.4" y2="100.1" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.3" stroke-linecap="round"/><line x1="10.3" y1="48.1" x2="16.3" y2="76.1" stroke="#150626" stroke-opacity="0.29" stroke-width="1.5" stroke-linecap="round"/><line x1="8.2" y1="42.4" x2="14.7" y2="76.5" stroke="#150626" stroke-opacity="0.26" stroke-width="1.3" stroke-linecap="round"/><line x1="6.6" y1="45.4" x2="12.7" y2="87.8" stroke="#150626" stroke-opacity="0.29" stroke-width="1.5" stroke-linecap="round"/><line x1="2.7" y1="40.1" x2="6.1" y2="89.7" stroke="#150626" stroke-opacity="0.32" stroke-width="1.4" stroke-linecap="round"/><line x1="1.9" y1="44.8" x2="3.3" y2="76.8" stroke="#150626" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="0.9" y1="47.2" x2="1.6" y2="82.5" stroke="#ffffff" stroke-opacity="0.28" stroke-width="2.1" stroke-linecap="round"/><line x1="-2.4" y1="37.4" x2="-5" y2="79.2" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1.0" stroke-linecap="round"/><line x1="-3.2" y1="37.3" x2="-8.7" y2="102.3" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.8" stroke-linecap="round"/><line x1="-6.9" y1="45.1" x2="-13.4" y2="86.8" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1.2" stroke-linecap="round"/><line x1="-7.4" y1="43.9" x2="-12.7" y2="75.7" stroke="#ffffff" stroke-opacity="0.31" stroke-width="2.4" stroke-linecap="round"/><line x1="-11.1" y1="46.4" x2="-18.1" y2="75.8" stroke="#ffffff" stroke-opacity="0.27" stroke-width="1.3" stroke-linecap="round"/><line x1="-11.3" y1="35.8" x2="-30.5" y2="96.6" stroke="#150626" stroke-opacity="0.38" stroke-width="2.6" stroke-linecap="round"/><line x1="-13.2" y1="39.7" x2="-27.9" y2="83.9" stroke="#150626" stroke-opacity="0.19" stroke-width="1.0" stroke-linecap="round"/><line x1="-16.6" y1="45.1" x2="-31.6" y2="85.9" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2.5" stroke-linecap="round"/><line x1="-18.1" y1="42.9" x2="-32.4" y2="76.5" stroke="#150626" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="-17.5" y1="36.1" x2="-34.4" y2="70.7" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.6" stroke-linecap="round"/><line x1="-20.6" y1="33.6" x2="-47.1" y2="76.9" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.7" stroke-linecap="round"/><line x1="-21.7" y1="31.9" x2="-48.9" y2="72" stroke="#150626" stroke-opacity="0.17" stroke-width="1.2" stroke-linecap="round"/><line x1="-20.5" y1="28.1" x2="-44.7" y2="61.4" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.2" stroke-linecap="round"/><line x1="-27.6" y1="34.9" x2="-55.7" y2="70.5" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="-30.9" y1="33.9" x2="-55" y2="60.2" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.0" stroke-linecap="round"/><line x1="-29.9" y1="30.3" x2="-52.5" y2="53.3" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.0" stroke-linecap="round"/><line x1="-29" y1="25.3" x2="-68.5" y2="59.7" stroke="#ffffff" stroke-opacity="0.27" stroke-width="2.5" stroke-linecap="round"/><line x1="-28" y1="23.2" x2="-61.6" y2="50.9" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.9" stroke-linecap="round"/><line x1="-28.3" y1="20.2" x2="-66.9" y2="47.7" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.5" stroke-linecap="round"/><line x1="-29.2" y1="18.4" x2="-61.5" y2="38.8" stroke="#150626" stroke-opacity="0.14" stroke-width="2.5" stroke-linecap="round"/><line x1="-35.2" y1="21" x2="-66.8" y2="39.9" stroke="#150626" stroke-opacity="0.33" stroke-width="2.2" stroke-linecap="round"/><line x1="-40" y1="19.8" x2="-75.5" y2="37.3" stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.5" stroke-linecap="round"/><line x1="-39.8" y1="17.9" x2="-65.6" y2="29.5" stroke="#ffffff" stroke-opacity="0.20" stroke-width="2.0" stroke-linecap="round"/><line x1="-32.6" y1="11.9" x2="-81.3" y2="29.7" stroke="#150626" stroke-opacity="0.22" stroke-width="1.0" stroke-linecap="round"/><line x1="-35.8" y1="9.8" x2="-68.6" y2="18.8" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.2" stroke-linecap="round"/><line x1="-31.8" y1="8.6" x2="-76" y2="20.6" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.4" stroke-linecap="round"/><line x1="-35.7" y1="6.8" x2="-82.7" y2="15.7" stroke="#150626" stroke-opacity="0.24" stroke-width="1.8" stroke-linecap="round"/><line x1="-40.3" y1="4" x2="-84" y2="8.3" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.1" stroke-linecap="round"/><line x1="-33.5" y1="2.9" x2="-73.4" y2="6.4" stroke="#ffffff" stroke-opacity="0.13" stroke-width="1.0" stroke-linecap="round"/><line x1="-42" y1="1.2" x2="-87.4" y2="2.6" stroke="#150626" stroke-opacity="0.24" stroke-width="0.8" stroke-linecap="round"/><line x1="-41.6" y1="-1.7" x2="-80.2" y2="-3.3" stroke="#150626" stroke-opacity="0.15" stroke-width="0.9" stroke-linecap="round"/><line x1="-37.8" y1="-4.2" x2="-68.1" y2="-7.5" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.2" stroke-linecap="round"/><line x1="-33" y1="-5.6" x2="-71.3" y2="-12" stroke="#150626" stroke-opacity="0.25" stroke-width="2.2" stroke-linecap="round"/><line x1="-35.8" y1="-9.3" x2="-88" y2="-22.8" stroke="#150626" stroke-opacity="0.22" stroke-width="1.9" stroke-linecap="round"/><line x1="-38.5" y1="-12.1" x2="-75.4" y2="-23.7" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.5" stroke-linecap="round"/><line x1="-41.5" y1="-15" x2="-72.4" y2="-26.1" stroke="#ffffff" stroke-opacity="0.11" stroke-width="1.9" stroke-linecap="round"/><line x1="-37.2" y1="-15.1" x2="-69.4" y2="-28.1" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.2" stroke-linecap="round"/><line x1="-33.3" y1="-18" x2="-69.7" y2="-37.7" stroke="#150626" stroke-opacity="0.14" stroke-width="2.4" stroke-linecap="round"/><line x1="-34.4" y1="-18.7" x2="-81.3" y2="-44.3" stroke="#ffffff" stroke-opacity="0.13" stroke-width="2.4" stroke-linecap="round"/><line x1="-33.6" y1="-21.6" x2="-67.1" y2="-43.1" stroke="#150626" stroke-opacity="0.16" stroke-width="0.9" stroke-linecap="round"/><line x1="-27.7" y1="-19.7" x2="-64.1" y2="-45.6" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.2" stroke-linecap="round"/><line x1="-31.9" y1="-26.3" x2="-70.9" y2="-58.4" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.6" stroke-linecap="round"/><line x1="-32" y1="-27.9" x2="-60.3" y2="-52.6" stroke="#150626" stroke-opacity="0.31" stroke-width="1.3" stroke-linecap="round"/><line x1="-30.2" y1="-29.5" x2="-55.3" y2="-54" stroke="#150626" stroke-opacity="0.20" stroke-width="0.8" stroke-linecap="round"/><line x1="-23.7" y1="-25.5" x2="-55.3" y2="-59.5" stroke="#ffffff" stroke-opacity="0.17" stroke-width="2.5" stroke-linecap="round"/><line x1="-26.7" y1="-34.5" x2="-49.7" y2="-64.1" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.4" stroke-linecap="round"/><line x1="-26.1" y1="-36" x2="-46" y2="-63.3" stroke="#150626" stroke-opacity="0.38" stroke-width="1.3" stroke-linecap="round"/><line x1="-25.8" y1="-38" x2="-55.1" y2="-81.2" stroke="#150626" stroke-opacity="0.14" stroke-width="1.1" stroke-linecap="round"/><line x1="-17.7" y1="-30.8" x2="-46.7" y2="-81.1" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.7" stroke-linecap="round"/><line x1="-22.2" y1="-41.8" x2="-48" y2="-90.2" stroke="#ffffff" stroke-opacity="0.13" stroke-width="1.4" stroke-linecap="round"/><line x1="-17.7" y1="-38.1" x2="-41.3" y2="-89.1" stroke="#ffffff" stroke-opacity="0.11" stroke-width="1.3" stroke-linecap="round"/><line x1="-17.9" y1="-44.6" x2="-34.5" y2="-86" stroke="#150626" stroke-opacity="0.18" stroke-width="2.0" stroke-linecap="round"/><line x1="-13.1" y1="-39" x2="-32.4" y2="-96.6" stroke="#150626" stroke-opacity="0.39" stroke-width="1.1" stroke-linecap="round"/><line x1="-12.7" y1="-41.9" x2="-28.7" y2="-94.8" stroke="#150626" stroke-opacity="0.21" stroke-width="0.9" stroke-linecap="round"/><line x1="-11.3" y1="-45.7" x2="-24.5" y2="-99.3" stroke="#150626" stroke-opacity="0.25" stroke-width="1.6" stroke-linecap="round"/><line x1="-7.9" y1="-40.7" x2="-18.6" y2="-95.9" stroke="#150626" stroke-opacity="0.22" stroke-width="1.2" stroke-linecap="round"/><line x1="-4.4" y1="-38" x2="-8.8" y2="-76.5" stroke="#ffffff" stroke-opacity="0.15" stroke-width="0.8" stroke-linecap="round"/><line x1="-3.4" y1="-45.4" x2="-6.1" y2="-81.1" stroke="#ffffff" stroke-opacity="0.10" stroke-width="0.9" stroke-linecap="round"/><line x1="-2.3" y1="-36.6" x2="-4.9" y2="-76.9" stroke="#ffffff" stroke-opacity="0.29" stroke-width="2.2" stroke-linecap="round"/><line x1="0.3" y1="-44.3" x2="0.8" y2="-99.5" stroke="#150626" stroke-opacity="0.15" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="-39.9" x2="2.3" y2="-88.8" stroke="#150626" stroke-opacity="0.17" stroke-width="2.4" stroke-linecap="round"/><line x1="4.4" y1="-47.8" x2="9" y2="-97.5" stroke="#150626" stroke-opacity="0.27" stroke-width="2.0" stroke-linecap="round"/><line x1="4.7" y1="-41.2" x2="11" y2="-96.7" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.9" stroke-linecap="round"/><line x1="7.1" y1="-38.2" x2="17" y2="-91.6" stroke="#ffffff" stroke-opacity="0.14" stroke-width="0.9" stroke-linecap="round"/><line x1="9.4" y1="-41.4" x2="18.9" y2="-83.1" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.6" stroke-linecap="round"/><line x1="10.1" y1="-36.1" x2="25.9" y2="-92.7" stroke="#150626" stroke-opacity="0.21" stroke-width="1.0" stroke-linecap="round"/><line x1="12.8" y1="-41.3" x2="24.2" y2="-78" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="14.2" y1="-34.1" x2="32.9" y2="-79" stroke="#150626" stroke-opacity="0.21" stroke-width="1.1" stroke-linecap="round"/><line x1="16.3" y1="-34.5" x2="38.9" y2="-82.5" stroke="#150626" stroke-opacity="0.27" stroke-width="1.9" stroke-linecap="round"/><line x1="19.4" y1="-36.7" x2="41.2" y2="-78.1" stroke="#ffffff" stroke-opacity="0.13" stroke-width="2.1" stroke-linecap="round"/><line x1="22.2" y1="-39" x2="45.2" y2="-79.6" stroke="#ffffff" stroke-opacity="0.21" stroke-width="2.0" stroke-linecap="round"/><line x1="20.1" y1="-33.2" x2="44.6" y2="-73.8" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2.0" stroke-linecap="round"/><line x1="25.2" y1="-34.9" x2="56.6" y2="-78.2" stroke="#150626" stroke-opacity="0.33" stroke-width="2.2" stroke-linecap="round"/><line x1="26.2" y1="-32.6" x2="48.9" y2="-61" stroke="#150626" stroke-opacity="0.28" stroke-width="1.1" stroke-linecap="round"/><line x1="26" y1="-29.6" x2="51.6" y2="-58.8" stroke="#150626" stroke-opacity="0.22" stroke-width="2.2" stroke-linecap="round"/><line x1="31.5" y1="-31.4" x2="53.3" y2="-53.2" stroke="#150626" stroke-opacity="0.15" stroke-width="1.8" stroke-linecap="round"/><line x1="32" y1="-27.7" x2="57.8" y2="-50" stroke="#150626" stroke-opacity="0.26" stroke-width="1.0" stroke-linecap="round"/><line x1="34.7" y1="-28.6" x2="65.4" y2="-53.9" stroke="#150626" stroke-opacity="0.16" stroke-width="2.0" stroke-linecap="round"/><line x1="36.8" y1="-27.1" x2="64.6" y2="-47.6" stroke="#150626" stroke-opacity="0.38" stroke-width="1.8" stroke-linecap="round"/><line x1="29.5" y1="-20" x2="65.3" y2="-44.2" stroke="#ffffff" stroke-opacity="0.27" stroke-width="2.6" stroke-linecap="round"/><line x1="34.4" y1="-20.7" x2="76.9" y2="-46.3" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.7" stroke-linecap="round"/><line x1="33.4" y1="-15.8" x2="64.3" y2="-30.5" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.0" stroke-linecap="round"/><line x1="31.1" y1="-14.5" x2="70.5" y2="-32.8" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="37.8" y1="-13.7" x2="81.8" y2="-29.6" stroke="#150626" stroke-opacity="0.16" stroke-width="2.2" stroke-linecap="round"/><line x1="37.2" y1="-12.2" x2="88.6" y2="-29.1" stroke="#ffffff" stroke-opacity="0.32" stroke-width="1.6" stroke-linecap="round"/><line x1="42.2" y1="-10.6" x2="85.2" y2="-21.4" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.1" stroke-linecap="round"/><line x1="39.4" y1="-7.7" x2="74" y2="-14.5" stroke="#150626" stroke-opacity="0.32" stroke-width="1.8" stroke-linecap="round"/><line x1="34.3" y1="-3.1" x2="67.9" y2="-6.2" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.0" stroke-linecap="round"/><line x1="34.3" y1="-1" x2="71.7" y2="-2" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.3" stroke-linecap="round"/></g>
+        <ellipse cx="0" cy="60" rx="66" ry="40" fill="url(#gGlow)"/>
+        <g class="core">
+          <ellipse rx="66" ry="74" fill="url(#gCollar_g)"/>
+          <ellipse class="pupil" rx="38" ry="43" fill="url(#gPupil)"/>
+        </g>
+        <ellipse rx="92" ry="104" fill="url(#gLimbal_g)"/>
+      </g>
+    </g>
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gShadow)"/>
+    <path class="gloss" transform="translate(605 0) scale(-1 1)" d="M150 152 C170 110 240 88 310 88 C360 88 410 100 442 126 C382 108 302 112 240 128 C200 138 172 150 150 152 Z" fill="url(#gGloss)" opacity=".5"/>
+    <g class="hi" clip-path="url(#irisClipHi)" transform="translate(303 178)">
+      <g class="hiIn">
+        <ellipse cx="-38" cy="-46" rx="34" ry="30" fill="#fff" opacity=".28" filter="url(#halo)"/>
+        <ellipse cx="-38" cy="-46" rx="25" ry="21" transform="rotate(-25 -38 -46)" fill="#fff"/>
+        <circle cx="34" cy="47" r="11" fill="#fff" opacity=".95"/>
+        <circle cx="53" cy="22" r="4.5" fill="#fff" opacity=".9"/>
+        <path d="M-62 24 C-54 56 -24 78 12 82" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+    <path d="M470 224 C440 262 380 288 300 288 C220 288 155 265 118 226" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round" filter="url(#soft)"/>
+  </g>
+  <path d="M520 195 C480 265 390 300 300 300 C200 300 125 270 85 220" fill="none" stroke="url(#gLow_g)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M105 185 C150 92 240 38 320 38 C410 38 480 80 528 150" fill="none" stroke="url(#gCrease_g)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M85 220 C120 105 225 55 312 55 C420 55 500 105 552 178 C540 186 530 190 520 195 C490 120 410 70 310 70 C230 70 130 120 85 220 Z" fill="#2a1830"/>
+  <path d="M170 100 C210 76 260 66 320 64 C380 64 430 80 472 110" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round" clip-path="url(#lidClip)"/>
+  <g class="lashes" fill="#2a1830"><path d="M417.1 75.4 Q445 54 486 48 Q445 54 412.9 68.6Z"/><path d="M454.9 93.1 Q490 72 528 70 Q490 72 451.1 84.9Z"/><path d="M477.2 107.3 Q515 92 558 98 Q515 92 474.8 98.7Z"/><path d="M508.8 131.9 Q545 120 582 137 Q545 120 507.2 124.1Z"/></g>
+</g>
+<g class="closedLid" opacity="0" fill="none" stroke="#2a1830" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M90 228 C150 260 240 274 306 274 C396 274 478 246 518 208" stroke-width="13"/>
+  <path d="M510 214 C530 206 548 194 568 176" stroke-width="7"/>
+  <path d="M470 236 C490 232 510 226 526 216" stroke-width="5"/>
+</g>
+<circle class="anchor" cx="303" cy="178" r="1" fill="none"/></g>
+    <g class="eye eyeR" transform="translate(86 62) scale(0.325 0.325) translate(-303 -178)">
+<g class="brow"><path d="M100 6 C160 -14 260 -26 366 -18 C424 -14 470 0 505 20 C462 4 418 -4 360 -6 C270 -10 190 0 136 16 C120 20 104 16 100 6 Z" fill="url(#gBrow_g)"/></g>
+<g class="blink">
+  <g clip-path="url(#eyeClip)">
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gSclera)"/>
+    <ellipse cx="102" cy="224" rx="17" ry="12" fill="#e9989a" opacity=".6"/>
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gCorner)"/>
+    <g class="iris" transform="translate(303 178)">
+      <g clip-path="url(#irisClip)">
+        <ellipse rx="92" ry="104" fill="url(#gIris_g)"/>
+        <g class="fibers"><line x1="38.4" y1="0" x2="83.8" y2="0.1" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.8" stroke-linecap="round"/><line x1="38.4" y1="1.2" x2="83.8" y2="2.6" stroke="#150626" stroke-opacity="0.26" stroke-width="2.3" stroke-linecap="round"/><line x1="39.8" y1="4.5" x2="85.3" y2="9.7" stroke="#150626" stroke-opacity="0.19" stroke-width="1.3" stroke-linecap="round"/><line x1="36.1" y1="6.2" x2="82.2" y2="14.1" stroke="#150626" stroke-opacity="0.30" stroke-width="1.8" stroke-linecap="round"/><line x1="41.3" y1="9.7" x2="87.1" y2="20.4" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.9" stroke-linecap="round"/><line x1="31.7" y1="9" x2="84.6" y2="24.1" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.1" stroke-linecap="round"/><line x1="34.2" y1="13.2" x2="78" y2="30.1" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.1" stroke-linecap="round"/><line x1="38.7" y1="17.9" x2="72.2" y2="33.3" stroke="#150626" stroke-opacity="0.16" stroke-width="2.3" stroke-linecap="round"/><line x1="35" y1="17.6" x2="68.5" y2="34.5" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.0" stroke-linecap="round"/><line x1="28.9" y1="17" x2="70.6" y2="41.5" stroke="#ffffff" stroke-opacity="0.32" stroke-width="1.6" stroke-linecap="round"/><line x1="31.4" y1="20.4" x2="60" y2="39" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.2" stroke-linecap="round"/><line x1="32.7" y1="23.4" x2="65.1" y2="46.5" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.0" stroke-linecap="round"/><line x1="31.8" y1="26.5" x2="57.3" y2="47.8" stroke="#150626" stroke-opacity="0.24" stroke-width="2.5" stroke-linecap="round"/><line x1="30.2" y1="28.9" x2="60.1" y2="57.4" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.6" stroke-linecap="round"/><line x1="28.7" y1="28.5" x2="51.2" y2="50.9" stroke="#ffffff" stroke-opacity="0.17" stroke-width="1.5" stroke-linecap="round"/><line x1="23.8" y1="25.7" x2="63.2" y2="68.2" stroke="#ffffff" stroke-opacity="0.21" stroke-width="1.0" stroke-linecap="round"/><line x1="26.3" y1="33.2" x2="60.6" y2="76.7" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.9" stroke-linecap="round"/><line x1="23.7" y1="33.4" x2="44.1" y2="62.1" stroke="#ffffff" stroke-opacity="0.24" stroke-width="2.6" stroke-linecap="round"/><line x1="19.4" y1="31" x2="41.3" y2="66" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.4" stroke-linecap="round"/><line x1="19.1" y1="35.2" x2="45.9" y2="84.5" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.3" stroke-linecap="round"/><line x1="18.6" y1="37.3" x2="41.4" y2="83" stroke="#150626" stroke-opacity="0.33" stroke-width="1.4" stroke-linecap="round"/><line x1="18.4" y1="38.4" x2="37.1" y2="77.4" stroke="#150626" stroke-opacity="0.35" stroke-width="2.5" stroke-linecap="round"/><line x1="12.6" y1="33.3" x2="31.1" y2="82.4" stroke="#ffffff" stroke-opacity="0.23" stroke-width="2.1" stroke-linecap="round"/><line x1="11.2" y1="33.9" x2="28.4" y2="85.6" stroke="#150626" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="11" y1="35.2" x2="31.4" y2="100.1" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.3" stroke-linecap="round"/><line x1="10.3" y1="48.1" x2="16.3" y2="76.1" stroke="#150626" stroke-opacity="0.29" stroke-width="1.5" stroke-linecap="round"/><line x1="8.2" y1="42.4" x2="14.7" y2="76.5" stroke="#150626" stroke-opacity="0.26" stroke-width="1.3" stroke-linecap="round"/><line x1="6.6" y1="45.4" x2="12.7" y2="87.8" stroke="#150626" stroke-opacity="0.29" stroke-width="1.5" stroke-linecap="round"/><line x1="2.7" y1="40.1" x2="6.1" y2="89.7" stroke="#150626" stroke-opacity="0.32" stroke-width="1.4" stroke-linecap="round"/><line x1="1.9" y1="44.8" x2="3.3" y2="76.8" stroke="#150626" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="0.9" y1="47.2" x2="1.6" y2="82.5" stroke="#ffffff" stroke-opacity="0.28" stroke-width="2.1" stroke-linecap="round"/><line x1="-2.4" y1="37.4" x2="-5" y2="79.2" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1.0" stroke-linecap="round"/><line x1="-3.2" y1="37.3" x2="-8.7" y2="102.3" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.8" stroke-linecap="round"/><line x1="-6.9" y1="45.1" x2="-13.4" y2="86.8" stroke="#ffffff" stroke-opacity="0.15" stroke-width="1.2" stroke-linecap="round"/><line x1="-7.4" y1="43.9" x2="-12.7" y2="75.7" stroke="#ffffff" stroke-opacity="0.31" stroke-width="2.4" stroke-linecap="round"/><line x1="-11.1" y1="46.4" x2="-18.1" y2="75.8" stroke="#ffffff" stroke-opacity="0.27" stroke-width="1.3" stroke-linecap="round"/><line x1="-11.3" y1="35.8" x2="-30.5" y2="96.6" stroke="#150626" stroke-opacity="0.38" stroke-width="2.6" stroke-linecap="round"/><line x1="-13.2" y1="39.7" x2="-27.9" y2="83.9" stroke="#150626" stroke-opacity="0.19" stroke-width="1.0" stroke-linecap="round"/><line x1="-16.6" y1="45.1" x2="-31.6" y2="85.9" stroke="#ffffff" stroke-opacity="0.15" stroke-width="2.5" stroke-linecap="round"/><line x1="-18.1" y1="42.9" x2="-32.4" y2="76.5" stroke="#150626" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="-17.5" y1="36.1" x2="-34.4" y2="70.7" stroke="#ffffff" stroke-opacity="0.23" stroke-width="1.6" stroke-linecap="round"/><line x1="-20.6" y1="33.6" x2="-47.1" y2="76.9" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.7" stroke-linecap="round"/><line x1="-21.7" y1="31.9" x2="-48.9" y2="72" stroke="#150626" stroke-opacity="0.17" stroke-width="1.2" stroke-linecap="round"/><line x1="-20.5" y1="28.1" x2="-44.7" y2="61.4" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.2" stroke-linecap="round"/><line x1="-27.6" y1="34.9" x2="-55.7" y2="70.5" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="-30.9" y1="33.9" x2="-55" y2="60.2" stroke="#ffffff" stroke-opacity="0.12" stroke-width="1.0" stroke-linecap="round"/><line x1="-29.9" y1="30.3" x2="-52.5" y2="53.3" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.0" stroke-linecap="round"/><line x1="-29" y1="25.3" x2="-68.5" y2="59.7" stroke="#ffffff" stroke-opacity="0.27" stroke-width="2.5" stroke-linecap="round"/><line x1="-28" y1="23.2" x2="-61.6" y2="50.9" stroke="#ffffff" stroke-opacity="0.25" stroke-width="0.9" stroke-linecap="round"/><line x1="-28.3" y1="20.2" x2="-66.9" y2="47.7" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.5" stroke-linecap="round"/><line x1="-29.2" y1="18.4" x2="-61.5" y2="38.8" stroke="#150626" stroke-opacity="0.14" stroke-width="2.5" stroke-linecap="round"/><line x1="-35.2" y1="21" x2="-66.8" y2="39.9" stroke="#150626" stroke-opacity="0.33" stroke-width="2.2" stroke-linecap="round"/><line x1="-40" y1="19.8" x2="-75.5" y2="37.3" stroke="#ffffff" stroke-opacity="0.22" stroke-width="1.5" stroke-linecap="round"/><line x1="-39.8" y1="17.9" x2="-65.6" y2="29.5" stroke="#ffffff" stroke-opacity="0.20" stroke-width="2.0" stroke-linecap="round"/><line x1="-32.6" y1="11.9" x2="-81.3" y2="29.7" stroke="#150626" stroke-opacity="0.22" stroke-width="1.0" stroke-linecap="round"/><line x1="-35.8" y1="9.8" x2="-68.6" y2="18.8" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.2" stroke-linecap="round"/><line x1="-31.8" y1="8.6" x2="-76" y2="20.6" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.4" stroke-linecap="round"/><line x1="-35.7" y1="6.8" x2="-82.7" y2="15.7" stroke="#150626" stroke-opacity="0.24" stroke-width="1.8" stroke-linecap="round"/><line x1="-40.3" y1="4" x2="-84" y2="8.3" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.1" stroke-linecap="round"/><line x1="-33.5" y1="2.9" x2="-73.4" y2="6.4" stroke="#ffffff" stroke-opacity="0.13" stroke-width="1.0" stroke-linecap="round"/><line x1="-42" y1="1.2" x2="-87.4" y2="2.6" stroke="#150626" stroke-opacity="0.24" stroke-width="0.8" stroke-linecap="round"/><line x1="-41.6" y1="-1.7" x2="-80.2" y2="-3.3" stroke="#150626" stroke-opacity="0.15" stroke-width="0.9" stroke-linecap="round"/><line x1="-37.8" y1="-4.2" x2="-68.1" y2="-7.5" stroke="#ffffff" stroke-opacity="0.30" stroke-width="1.2" stroke-linecap="round"/><line x1="-33" y1="-5.6" x2="-71.3" y2="-12" stroke="#150626" stroke-opacity="0.25" stroke-width="2.2" stroke-linecap="round"/><line x1="-35.8" y1="-9.3" x2="-88" y2="-22.8" stroke="#150626" stroke-opacity="0.22" stroke-width="1.9" stroke-linecap="round"/><line x1="-38.5" y1="-12.1" x2="-75.4" y2="-23.7" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.5" stroke-linecap="round"/><line x1="-41.5" y1="-15" x2="-72.4" y2="-26.1" stroke="#ffffff" stroke-opacity="0.11" stroke-width="1.9" stroke-linecap="round"/><line x1="-37.2" y1="-15.1" x2="-69.4" y2="-28.1" stroke="#ffffff" stroke-opacity="0.26" stroke-width="1.2" stroke-linecap="round"/><line x1="-33.3" y1="-18" x2="-69.7" y2="-37.7" stroke="#150626" stroke-opacity="0.14" stroke-width="2.4" stroke-linecap="round"/><line x1="-34.4" y1="-18.7" x2="-81.3" y2="-44.3" stroke="#ffffff" stroke-opacity="0.13" stroke-width="2.4" stroke-linecap="round"/><line x1="-33.6" y1="-21.6" x2="-67.1" y2="-43.1" stroke="#150626" stroke-opacity="0.16" stroke-width="0.9" stroke-linecap="round"/><line x1="-27.7" y1="-19.7" x2="-64.1" y2="-45.6" stroke="#ffffff" stroke-opacity="0.20" stroke-width="1.2" stroke-linecap="round"/><line x1="-31.9" y1="-26.3" x2="-70.9" y2="-58.4" stroke="#ffffff" stroke-opacity="0.14" stroke-width="1.6" stroke-linecap="round"/><line x1="-32" y1="-27.9" x2="-60.3" y2="-52.6" stroke="#150626" stroke-opacity="0.31" stroke-width="1.3" stroke-linecap="round"/><line x1="-30.2" y1="-29.5" x2="-55.3" y2="-54" stroke="#150626" stroke-opacity="0.20" stroke-width="0.8" stroke-linecap="round"/><line x1="-23.7" y1="-25.5" x2="-55.3" y2="-59.5" stroke="#ffffff" stroke-opacity="0.17" stroke-width="2.5" stroke-linecap="round"/><line x1="-26.7" y1="-34.5" x2="-49.7" y2="-64.1" stroke="#ffffff" stroke-opacity="0.19" stroke-width="2.4" stroke-linecap="round"/><line x1="-26.1" y1="-36" x2="-46" y2="-63.3" stroke="#150626" stroke-opacity="0.38" stroke-width="1.3" stroke-linecap="round"/><line x1="-25.8" y1="-38" x2="-55.1" y2="-81.2" stroke="#150626" stroke-opacity="0.14" stroke-width="1.1" stroke-linecap="round"/><line x1="-17.7" y1="-30.8" x2="-46.7" y2="-81.1" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.7" stroke-linecap="round"/><line x1="-22.2" y1="-41.8" x2="-48" y2="-90.2" stroke="#ffffff" stroke-opacity="0.13" stroke-width="1.4" stroke-linecap="round"/><line x1="-17.7" y1="-38.1" x2="-41.3" y2="-89.1" stroke="#ffffff" stroke-opacity="0.11" stroke-width="1.3" stroke-linecap="round"/><line x1="-17.9" y1="-44.6" x2="-34.5" y2="-86" stroke="#150626" stroke-opacity="0.18" stroke-width="2.0" stroke-linecap="round"/><line x1="-13.1" y1="-39" x2="-32.4" y2="-96.6" stroke="#150626" stroke-opacity="0.39" stroke-width="1.1" stroke-linecap="round"/><line x1="-12.7" y1="-41.9" x2="-28.7" y2="-94.8" stroke="#150626" stroke-opacity="0.21" stroke-width="0.9" stroke-linecap="round"/><line x1="-11.3" y1="-45.7" x2="-24.5" y2="-99.3" stroke="#150626" stroke-opacity="0.25" stroke-width="1.6" stroke-linecap="round"/><line x1="-7.9" y1="-40.7" x2="-18.6" y2="-95.9" stroke="#150626" stroke-opacity="0.22" stroke-width="1.2" stroke-linecap="round"/><line x1="-4.4" y1="-38" x2="-8.8" y2="-76.5" stroke="#ffffff" stroke-opacity="0.15" stroke-width="0.8" stroke-linecap="round"/><line x1="-3.4" y1="-45.4" x2="-6.1" y2="-81.1" stroke="#ffffff" stroke-opacity="0.10" stroke-width="0.9" stroke-linecap="round"/><line x1="-2.3" y1="-36.6" x2="-4.9" y2="-76.9" stroke="#ffffff" stroke-opacity="0.29" stroke-width="2.2" stroke-linecap="round"/><line x1="0.3" y1="-44.3" x2="0.8" y2="-99.5" stroke="#150626" stroke-opacity="0.15" stroke-width="1.5" stroke-linecap="round"/><line x1="1" y1="-39.9" x2="2.3" y2="-88.8" stroke="#150626" stroke-opacity="0.17" stroke-width="2.4" stroke-linecap="round"/><line x1="4.4" y1="-47.8" x2="9" y2="-97.5" stroke="#150626" stroke-opacity="0.27" stroke-width="2.0" stroke-linecap="round"/><line x1="4.7" y1="-41.2" x2="11" y2="-96.7" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.9" stroke-linecap="round"/><line x1="7.1" y1="-38.2" x2="17" y2="-91.6" stroke="#ffffff" stroke-opacity="0.14" stroke-width="0.9" stroke-linecap="round"/><line x1="9.4" y1="-41.4" x2="18.9" y2="-83.1" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.6" stroke-linecap="round"/><line x1="10.1" y1="-36.1" x2="25.9" y2="-92.7" stroke="#150626" stroke-opacity="0.21" stroke-width="1.0" stroke-linecap="round"/><line x1="12.8" y1="-41.3" x2="24.2" y2="-78" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2.3" stroke-linecap="round"/><line x1="14.2" y1="-34.1" x2="32.9" y2="-79" stroke="#150626" stroke-opacity="0.21" stroke-width="1.1" stroke-linecap="round"/><line x1="16.3" y1="-34.5" x2="38.9" y2="-82.5" stroke="#150626" stroke-opacity="0.27" stroke-width="1.9" stroke-linecap="round"/><line x1="19.4" y1="-36.7" x2="41.2" y2="-78.1" stroke="#ffffff" stroke-opacity="0.13" stroke-width="2.1" stroke-linecap="round"/><line x1="22.2" y1="-39" x2="45.2" y2="-79.6" stroke="#ffffff" stroke-opacity="0.21" stroke-width="2.0" stroke-linecap="round"/><line x1="20.1" y1="-33.2" x2="44.6" y2="-73.8" stroke="#ffffff" stroke-opacity="0.18" stroke-width="2.0" stroke-linecap="round"/><line x1="25.2" y1="-34.9" x2="56.6" y2="-78.2" stroke="#150626" stroke-opacity="0.33" stroke-width="2.2" stroke-linecap="round"/><line x1="26.2" y1="-32.6" x2="48.9" y2="-61" stroke="#150626" stroke-opacity="0.28" stroke-width="1.1" stroke-linecap="round"/><line x1="26" y1="-29.6" x2="51.6" y2="-58.8" stroke="#150626" stroke-opacity="0.22" stroke-width="2.2" stroke-linecap="round"/><line x1="31.5" y1="-31.4" x2="53.3" y2="-53.2" stroke="#150626" stroke-opacity="0.15" stroke-width="1.8" stroke-linecap="round"/><line x1="32" y1="-27.7" x2="57.8" y2="-50" stroke="#150626" stroke-opacity="0.26" stroke-width="1.0" stroke-linecap="round"/><line x1="34.7" y1="-28.6" x2="65.4" y2="-53.9" stroke="#150626" stroke-opacity="0.16" stroke-width="2.0" stroke-linecap="round"/><line x1="36.8" y1="-27.1" x2="64.6" y2="-47.6" stroke="#150626" stroke-opacity="0.38" stroke-width="1.8" stroke-linecap="round"/><line x1="29.5" y1="-20" x2="65.3" y2="-44.2" stroke="#ffffff" stroke-opacity="0.27" stroke-width="2.6" stroke-linecap="round"/><line x1="34.4" y1="-20.7" x2="76.9" y2="-46.3" stroke="#ffffff" stroke-opacity="0.31" stroke-width="1.7" stroke-linecap="round"/><line x1="33.4" y1="-15.8" x2="64.3" y2="-30.5" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.0" stroke-linecap="round"/><line x1="31.1" y1="-14.5" x2="70.5" y2="-32.8" stroke="#ffffff" stroke-opacity="0.25" stroke-width="1.5" stroke-linecap="round"/><line x1="37.8" y1="-13.7" x2="81.8" y2="-29.6" stroke="#150626" stroke-opacity="0.16" stroke-width="2.2" stroke-linecap="round"/><line x1="37.2" y1="-12.2" x2="88.6" y2="-29.1" stroke="#ffffff" stroke-opacity="0.32" stroke-width="1.6" stroke-linecap="round"/><line x1="42.2" y1="-10.6" x2="85.2" y2="-21.4" stroke="#ffffff" stroke-opacity="0.29" stroke-width="1.1" stroke-linecap="round"/><line x1="39.4" y1="-7.7" x2="74" y2="-14.5" stroke="#150626" stroke-opacity="0.32" stroke-width="1.8" stroke-linecap="round"/><line x1="34.3" y1="-3.1" x2="67.9" y2="-6.2" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2.0" stroke-linecap="round"/><line x1="34.3" y1="-1" x2="71.7" y2="-2" stroke="#ffffff" stroke-opacity="0.24" stroke-width="1.3" stroke-linecap="round"/></g>
+        <ellipse cx="0" cy="60" rx="66" ry="40" fill="url(#gGlow)"/>
+        <g class="core">
+          <ellipse rx="66" ry="74" fill="url(#gCollar_g)"/>
+          <ellipse class="pupil" rx="38" ry="43" fill="url(#gPupil)"/>
+        </g>
+        <ellipse rx="92" ry="104" fill="url(#gLimbal_g)"/>
+      </g>
+    </g>
+    <path d="M85 220 C130 120 230 70 310 70 C410 70 490 120 520 195 C480 265 390 300 300 300 C200 300 125 270 85 220 Z" fill="url(#gShadow)"/>
+    <path class="gloss" d="M150 152 C170 110 240 88 310 88 C360 88 410 100 442 126 C382 108 302 112 240 128 C200 138 172 150 150 152 Z" fill="url(#gGloss)" opacity=".5"/>
+    <g class="hi" clip-path="url(#irisClipHi)" transform="translate(303 178)">
+      <g class="hiIn">
+        <ellipse cx="-38" cy="-46" rx="34" ry="30" fill="#fff" opacity=".28" filter="url(#halo)"/>
+        <ellipse cx="-38" cy="-46" rx="25" ry="21" transform="rotate(-25 -38 -46)" fill="#fff"/>
+        <circle cx="34" cy="47" r="11" fill="#fff" opacity=".95"/>
+        <circle cx="53" cy="22" r="4.5" fill="#fff" opacity=".9"/>
+        <path d="M-62 24 C-54 56 -24 78 12 82" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round"/>
+      </g>
+    </g>
+    <path d="M470 224 C440 262 380 288 300 288 C220 288 155 265 118 226" fill="none" stroke="#fff" stroke-opacity=".6" stroke-width="5" stroke-linecap="round" filter="url(#soft)"/>
+  </g>
+  <path d="M520 195 C480 265 390 300 300 300 C200 300 125 270 85 220" fill="none" stroke="url(#gLow_g)" stroke-width="3.2" stroke-linecap="round"/>
+  <path d="M105 185 C150 92 240 38 320 38 C410 38 480 80 528 150" fill="none" stroke="url(#gCrease_g)" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M85 220 C120 105 225 55 312 55 C420 55 500 105 552 178 C540 186 530 190 520 195 C490 120 410 70 310 70 C230 70 130 120 85 220 Z" fill="#2a1830"/>
+  <path d="M170 100 C210 76 260 66 320 64 C380 64 430 80 472 110" fill="none" stroke="#fff" stroke-opacity=".3" stroke-width="3" stroke-linecap="round" clip-path="url(#lidClip)"/>
+  <g class="lashes" fill="#2a1830"><path d="M417.1 75.4 Q445 54 486 48 Q445 54 412.9 68.6Z"/><path d="M454.9 93.1 Q490 72 528 70 Q490 72 451.1 84.9Z"/><path d="M477.2 107.3 Q515 92 558 98 Q515 92 474.8 98.7Z"/><path d="M508.8 131.9 Q545 120 582 137 Q545 120 507.2 124.1Z"/></g>
+</g>
+<g class="closedLid" opacity="0" fill="none" stroke="#2a1830" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M90 228 C150 260 240 274 306 274 C396 274 478 246 518 208" stroke-width="13"/>
+  <path d="M510 214 C530 206 548 194 568 176" stroke-width="7"/>
+  <path d="M470 236 C490 232 510 226 526 216" stroke-width="5"/>
+</g>
+<circle class="anchor" cx="303" cy="178" r="1" fill="none"/></g>
+    <path transform="translate(0 30)" d="M-2 84 Q3 92 8 86" fill="none" stroke="#d99a88" stroke-width="2.6" stroke-linecap="round"/>
+    <path class="mouthA" transform="translate(0 38) scale(.78)" d="M-19 138 Q0 150 19 138" fill="none" stroke="#c76270" stroke-width="3.4" stroke-linecap="round"/>
+    <g class="mouthB" opacity="0" transform="translate(0 40) scale(.78)">
+      <path d="M-26 132 Q0 164 26 132 Q0 138 -26 132 Z" fill="#c4505e" stroke="#c4505e" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M-13 148 Q0 158 13 148 Q0 143 -13 148 Z" fill="#ff9ea6"/>
+    </g>
+    <g class="mouthK" opacity="0" transform="translate(0 148)">
+      <path d="M-11 -3 C-8 -9 -2 -8 0 -5 C2 -8 8 -9 11 -3 C12 5 6 11 0 11 C-6 11 -12 5 -11 -3 Z" fill="#e0687a" stroke="#c4505e" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M-4 1 C-2 -1 2 -1 4 1" stroke="#8e2f3c" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+      <ellipse cx="-4" cy="-4" rx="3.4" ry="1.6" fill="#fff" opacity=".7"/>
+    </g>
+    <circle class="mouthAnchor" cx="0" cy="148" r="1" fill="none"/>
+    <g class="hairFront">
+      <path d="M-192 -30 C-214 -172 -112 -252 0 -252 C112 -252 214 -172 192 -30 C198 30 192 110 176 176 C164 120 158 62 152 6 L150 -20 C128.7 -47 119 -70.7 112 -72 C105 -73.3 97.7 -48.3 90 -50 C82.3 -51.7 73.7 -81.3 66 -82 C58.3 -82.7 51.3 -53.3 44 -54 C36.7 -54.7 29.3 -85.3 22 -86 C14.7 -86.7 7.3 -58 0 -58 C-7.3 -58 -14.7 -86.7 -22 -86 C-29.3 -85.3 -36.7 -54.7 -44 -54 C-51.3 -53.3 -58.3 -82.7 -66 -82 C-73.7 -81.3 -82.3 -51.7 -90 -50 C-97.7 -48.3 -105 -73.3 -112 -72 C-119 -70.7 -125.7 -50.7 -132 -42 C-138.3 -33.3 -147 -23.7 -150 -20 L-152 6 C-158 62 -164 120 -176 176 C-192 110 -198 30 -192 -30 Z" fill="url(#hairG_g)" stroke="#3d2a8a" stroke-width="3" stroke-linejoin="round"/>
+      <g fill="none" stroke="#3d2a8a" stroke-opacity=".5" stroke-width="2.4" stroke-linecap="round">
+        <path d="M0 -250 C-6 -190 -8 -130 0 -90"/>
+        <path d="M-70 -238 C-96 -190 -104 -140 -104 -98"/>
+        <path d="M70 -238 C96 -190 104 -140 104 -98"/>
+        <path d="M-170 -110 C-178 -60 -174 20 -168 70"/>
+        <path d="M170 -110 C178 -60 174 20 168 70"/>
+      </g>
+      <path d="M-150 -168 C-92 -226 92 -226 150 -168 C96 -198 -96 -198 -150 -168 Z" fill="url(#hiBandG)" filter="url(#blur3)"/>
+      <path d="M-150 -168 C-92 -226 92 -226 150 -168 C96 -198 -96 -198 -150 -168 Z" fill="#fff" opacity=".35"/>
+      <path d="M-178 20 C-184 70 -180 110 -174 140 M178 20 C184 70 180 110 174 140" fill="none" stroke="#fff" stroke-opacity=".4" stroke-width="5" stroke-linecap="round"/>
+      <g transform="translate(118 -104) rotate(14)">
+        <path d="M0 -20 L6 -6 L21 -6 L9 3 L14 18 L0 9 L-14 18 L-9 3 L-21 -6 L-6 -6 Z" fill="#ffd86b" stroke="#d99a1e" stroke-width="2.4" stroke-linejoin="round"/>
+        <path d="M-5 -8 L0 -14 L3 -8" fill="none" stroke="#fff" stroke-opacity=".8" stroke-width="2.4" stroke-linecap="round"/>
+      </g>
+      <g transform="translate(-122 -112) rotate(-24)">
+        <rect x="-24" y="-5" width="48" height="10" rx="5" fill="#fff8ee" stroke="#c9b9a0" stroke-width="2"/>
+        <rect x="-18" y="-2" width="20" height="3" rx="1.5" fill="#fff"/>
+      </g>
+    </g>
+    <g class="ahoge">
+      <path d="M-8 -246 C-34 -300 14 -330 40 -300 C22 -312 -2 -296 6 -246 Z" fill="url(#hairG_g)" stroke="#3d2a8a" stroke-width="3" stroke-linejoin="round"/>
+    </g>
+    <circle class="faceAnchor" cx="0" cy="10" r="1" fill="none"/>
+  </g>
+</g>
+</g>
+<g id="arm" opacity="0">
+  <path d="M-36 14 C-46 70 -54 140 -60 232 L78 232 C74 140 56 70 40 14 Z" fill="url(#sleeveG)"/>
+  <g id="handG">
+    <use href="#handShape" fill="#d9a48f" stroke="#d9a48f" stroke-width="6" stroke-linejoin="round"/>
+    <use href="#handShape" fill="url(#skinG_g)"/>
+    <path d="M-12 -52 L-12 -34 M0 -52 L0 -34 M12 -52 L12 -34" stroke="#e3b09b" stroke-width="2" stroke-linecap="round" fill="none"/>
+    <circle cx="0" cy="-22" r="9" fill="#ff9ab8" opacity=".35" filter="url(#blur3)"/>
+  </g>
+  <path d="M-37 6 C-20 15 22 15 39 6 L42 28 C22 37 -22 37 -42 28 Z" fill="#fbf3e3" stroke="#d9cbb0" stroke-width="2" stroke-linejoin="round"/>
+  <path d="M-41 24 C-22 33 22 33 41 24" stroke="#2e3a6e" stroke-width="3" fill="none" stroke-linecap="round"/>
+</g>
+</g>
+</svg>
+</div>
+<canvas id="fx" aria-hidden="true"></canvas>
+<p class="hint">Tap or click anywhere and she'll blow the kiss right there. Move your cursor and her eyes follow.</p>
+<button class="kiss-btn" id="kissBtn" type="button">Blow a kiss</button>
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  var IX = 303, IY = 178;   // iris rest position inside an eye
+  var MX = 80, MY = 34;     // max iris travel (eye-local units)
+  var PIV = 235;            // blink pivot
+
+  function rng(seed) {
+    return function () {
+      seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+      var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+  var r = rng(41);
+  var f2 = function (n) { return n.toFixed(2); };
+
+  function makeEye(el, m) {
+    var q = function (c) { return el.querySelector('.' + c); };
+    return {
+      host: el, m: m,
+      tx: 0, ty: 0, x: 0, y: 0, vx: 0, vy: 0, ps: 1,
+      iris: q('iris'), hi: q('hi'), hiIn: q('hiIn'), pupil: q('pupil'), core: q('core'),
+      brow: q('brow'), blink: q('blink'), closed: q('closedLid'), anchor: q('anchor'),
+      wink: -1, winkAmt: 0, cx: 0, cy: 0
+    };
+  }
+
+  function makeChar(id, cfg) {
+    var root = document.querySelector('#' + id + ' .char');
+    var q = function (c) { return root.querySelector('.' + c); };
+    return {
+      cfg: cfg,
+      head: q('head'), hairBack: q('hairBack'), body: q('body'), ahoge: q('ahoge'),
+      blush: q('blush'), mouthA: q('mouthA'), mouthK: q('mouthK'), mouthAnchor: q('mouthAnchor'), mouthB: q('mouthB'), face: q('faceAnchor'),
+      eyes: [makeEye(root.querySelector('.eyeL'), -1), makeEye(root.querySelector('.eyeR'), 1)],
+      hx: 0, hy: 0, rot: 0, bx: 0, by: 0, brot: 0,
+      contact: 0, pulse: 0,
+      blinkStart: -1, nextBlink: 1200 + r() * 2600, dbl: false,
+      phase: r() * 6.28,
+      awayTx: 0, awayTy: 0
+    };
+  }
+
+  var chars = [
+    makeChar('mika', { b0: .35, b1: 1.0, smile: 1, ahoge: '0 -246', shy: false })
+  ];
+
+  function center(el) {
+    var b = el.getBoundingClientRect();
+    return [b.left + b.width / 2, b.top + b.height / 2];
+  }
+
+  function look(e, px, py, sat) {
+    var dx = px - e.cx, dy = py - e.cy, d = Math.hypot(dx, dy);
+    if (d < 1) { e.tx = 0; e.ty = 0; return; }
+    var f = 1 - Math.exp(-d / sat);
+    e.tx = dx / d * f;
+    e.ty = dy / d * f;
+  }
+
+  /* ---------- input ---------- */
+  var px = 0, py = 0, havePointer = false, lastMove = -1e9, pressUntil = 0;
+
+  window.addEventListener('pointermove', function (ev) {
+    px = ev.clientX; py = ev.clientY; havePointer = true;
+    lastMove = performance.now();
+  }, { passive: true });
+
+  window.addEventListener('pointerdown', function (ev) {
+    px = ev.clientX; py = ev.clientY; havePointer = true;
+    lastMove = performance.now();
+    pressUntil = lastMove + 260;
+    var host = ev.target && ev.target.closest ? ev.target.closest('.eye') : null;
+    var hit = null, hitChar = null;
+    chars.forEach(function (c) {
+      c.eyes.forEach(function (e) { if (host && e.host === host) { hit = e; hitChar = c; } });
+    });
+    if (hit) {
+      if (hit.wink < 0) hit.wink = lastMove;
+      hitChar.pulse = 1;
+    } else {
+      chars.forEach(function (c) { if (c.blinkStart < 0) c.blinkStart = lastMove; });
+    }
+    if (!(ev.target && ev.target.closest && ev.target.closest('button'))) startKiss(ev.clientX, ev.clientY, lastMove);
+  }, { passive: true });
+
+  document.addEventListener('pointerout', function (ev) {
+    if (!ev.relatedTarget) lastMove = performance.now() - 2600;
+  });
+
+  /* ---------- idle: they look at each other, then look away ---------- */
+  var mode = 'away', modeUntil = 0;
+
+
+  /* ---------- kiss choreography ---------- */
+  var arm = document.getElementById('arm');
+  var K = { active: false, t0: 0, tx: 0, ty: 0, mouth: 0, tilt: 0, smile: 0, hand: 0, push: 0,
+            winked: false, released: false, burst: false, end: 0, nextAuto: 0, side: 1 };
+  var kissBtn = document.getElementById('kissBtn');
+
+  function ease(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
+  function startKiss(x, y, now) {
+    now = now || performance.now();
+    if (K.active && now - K.t0 < 1700) return;
+    var m = center(chars[0].mouthAnchor);
+    if (Math.hypot(x - m[0], y - m[1]) < 140) { x = m[0] + 220; y = m[1] - 170; }   // never kiss her own chin
+    K.active = true; K.t0 = now; K.tx = x; K.ty = y;
+    K.winked = false; K.released = false; K.burst = false; K.end = 2800;
+  }
+  kissBtn.addEventListener('click', function () { K.nextAuto = performance.now() + 7000; autoTarget(performance.now(), true); });
+  function autoTarget(now, force) {
+    if (K.active && !force) return;
+    var w = innerWidth, h = innerHeight;
+    K.side = -K.side;
+    var x = K.side > 0 ? w * (.68 + Math.random() * .22) : w * (.1 + Math.random() * .22);
+    var y = h * (.16 + Math.random() * .3);
+    startKiss(x, y, now);
+  }
+
+  function updateKiss(now, dt) {
+    if (!K.nextAuto) K.nextAuto = now + 1300;
+    if (!K.active && now > K.nextAuto && now - lastMove > 2500) { autoTarget(now); K.nextAuto = now + 6500; }
+    var hand = 0, mouth = 0, push = 0, tilt = 0, smile = 0;
+    if (K.active) {
+      var t = now - K.t0;
+      hand  = ease(t / 380) - ease((t - 1150) / 420);
+      mouth = ease((t - 120) / 260) - ease((t - 1050) / 300);
+      push  = ease((t - 780) / 220) - ease((t - 1010) / 380);
+      tilt  = ease((t - 80) / 420) - ease((t - 1250) / 500);
+      smile = ease((t - 1050) / 300) * (1 - ease((t - K.end + 600) / 600));
+      if (!K.winked && t > 470) { K.winked = true; chars[0].eyes[1].wink = now; }
+      if (!K.released && t >= 800) { K.released = true; releaseHeart(now); }
+      if (t > K.end) K.active = false;
+    }
+    K.hand = hand; K.mouth = Math.max(0, mouth); K.push = Math.max(0, push); K.tilt = tilt;
+    K.smile += (smile - K.smile) * Math.min(1, dt * 12);
+
+    var h = Math.max(0, hand), p = K.push;
+    var x = 150 + (78 - 150) * h + p * 54, y = 380 + (232 - 380) * h - p * 26;
+    var r = 18 + (-8 - 18) * h - p * 16, sc = 1 + p * .1;
+    arm.setAttribute('opacity', f2(Math.min(1, h * 5)));
+    arm.setAttribute('transform', 'translate(' + f2(x) + ' ' + f2(y) + ') rotate(' + f2(r) + ') scale(' + f2(sc) + ')');
+  }
+
+  /* ---------- heart + glitter (canvas) ---------- */
+  var fx = document.getElementById('fx'), g = fx.getContext('2d');
+  var fdpr = 1, parts = [], heart = null, flash = [];
+  var COLORS = ['#ffffff', '#fff2c2', '#ffd6ea', '#ffb3d9', '#e2d3ff', '#b9ecff'];
+  function fxResize() {
+    fdpr = Math.min(window.devicePixelRatio || 1, 2);
+    fx.width = innerWidth * fdpr; fx.height = innerHeight * fdpr;
+  }
+  fxResize(); window.addEventListener('resize', fxResize);
+  function U() { return Math.min(innerWidth, innerHeight) / 800; }
+  function pick(a) { return a[(Math.random() * a.length) | 0]; }
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+
+  function releaseHeart(now) {
+    var m0 = center(chars[0].mouthAnchor), x1 = K.tx, y1 = K.ty;
+    var dx0 = x1 - m0[0], dy0 = y1 - m0[1], dl = Math.hypot(dx0, dy0) || 1;
+    var x0 = m0[0] + dx0 / dl * 70 * U(), y0 = m0[1] + dy0 / dl * 70 * U() - 6 * U();
+    var d = Math.hypot(x1 - x0, y1 - y0);
+    var dur = Math.max(800, Math.min(1500, 520 + d * .85));
+    var nx = -(y1 - y0) / d, ny = (x1 - x0) / d, bend = d * .22 * (nx > 0 ? -1 : 1);
+    heart = { x0: x0, y0: y0, cx: (x0 + x1) / 2 + nx * bend, cy: (y0 + y1) / 2 + ny * bend - d * .12, x1: x1, y1: y1,
+              t0: now, dur: dur, x: x0, y: y0, size: 0 };
+    K.end = Math.max(K.end, 800 + dur + 1100);
+  }
+
+  function addPart(o) { parts.push(o); }
+  function burst(x, y) {
+    var u = U(), calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches ? .5 : 1;
+    var n;
+    for (n = 0; n < 28 * calm; n++) { var a = rnd(0, 6.283), v = rnd(90, 360) * u;
+      addPart({ k: 's', x: x, y: y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 40 * u, life: rnd(.9, 1.7), age: 0, size: rnd(7, 19) * u, rot: rnd(0, 6), vr: rnd(-3, 3), c: pick(COLORS), tw: rnd(0, 6), tf: rnd(9, 18), drag: 2.1, grav: 60 * u }); }
+    for (n = 0; n < 90 * calm; n++) { var a2 = rnd(0, 6.283), v2 = rnd(40, 420) * u;
+      addPart({ k: Math.random() < .5 ? 'd' : 'c', x: x, y: y, vx: Math.cos(a2) * v2, vy: Math.sin(a2) * v2 - 60 * u, life: rnd(1.2, 2.6), age: 0, size: rnd(1.6, 4.6) * u, rot: rnd(0, 6), vr: rnd(-8, 8), c: pick(COLORS), tw: rnd(0, 6), tf: rnd(12, 30), drag: 1.5, grav: 150 * u }); }
+    for (n = 0; n < 7 * calm; n++) { var a3 = rnd(-2.6, -.5), v3 = rnd(60, 190) * u;
+      addPart({ k: 'h', x: x, y: y, vx: Math.cos(a3) * v3, vy: Math.sin(a3) * v3, life: rnd(1.3, 2), age: 0, size: rnd(7, 13) * u, rot: 0, vr: 0, c: '#ff8fc0', tw: 0, tf: 0, drag: 1.2, grav: -30 * u }); }
+    flash.push({ x: x, y: y, age: 0, life: .55 });
+  }
+
+  function heartPath(c, s) {
+    c.beginPath();
+    c.moveTo(0, s * .38);
+    c.bezierCurveTo(-s * 1.15, -s * .25, -s * .62, -s * 1.05, 0, -s * .5);
+    c.bezierCurveTo(s * .62, -s * 1.05, s * 1.15, -s * .25, 0, s * .38);
+    c.closePath();
+  }
+  function sparkle(c, r) {
+    c.beginPath(); c.moveTo(0, -r);
+    c.quadraticCurveTo(r * .12, -r * .12, r, 0); c.quadraticCurveTo(r * .12, r * .12, 0, r);
+    c.quadraticCurveTo(-r * .12, r * .12, -r, 0); c.quadraticCurveTo(-r * .12, -r * .12, 0, -r);
+    c.fill();
+  }
+
+  function drawFX(now, dt) {
+    g.setTransform(fdpr, 0, 0, fdpr, 0, 0);
+    g.clearRect(0, 0, innerWidth, innerHeight);
+    var u = U(), i;
+
+    if (heart) {
+      var q = (now - heart.t0) / heart.dur;
+      if (q >= 1) { burst(heart.x1, heart.y1); heart = null; }
+      else {
+        var e = 1 - Math.pow(1 - q, 1.7), m = 1 - e;
+        heart.x = m * m * heart.x0 + 2 * m * e * heart.cx + e * e * heart.x1;
+        heart.y = m * m * heart.y0 + 2 * m * e * heart.cy + e * e * heart.y1;
+        heart.size = (17 + 30 * ease(q * 2.6)) * u * (1 + .07 * Math.sin(now / 70));
+        for (i = 0; i < 2; i++) addPart({ k: Math.random() < .5 ? 's' : 'c', x: heart.x + rnd(-6, 6) * u, y: heart.y + rnd(-6, 6) * u,
+          vx: rnd(-30, 30) * u, vy: rnd(-10, 40) * u, life: rnd(.45, .85), age: 0, size: rnd(3, 9) * u, rot: rnd(0, 6), vr: rnd(-4, 4),
+          c: pick(COLORS), tw: rnd(0, 6), tf: rnd(14, 26), drag: 2, grav: 30 * u });
+        g.save(); g.translate(heart.x, heart.y); g.rotate(Math.sin(now / 160) * .22 + (heart.x1 > heart.x0 ? .12 : -.12));
+        g.shadowColor = 'rgba(255,120,185,.95)'; g.shadowBlur = 26 * u;
+        var gr = g.createRadialGradient(-heart.size * .3, -heart.size * .45, 1, 0, 0, heart.size * 1.25);
+        gr.addColorStop(0, '#ffe3f0'); gr.addColorStop(.38, '#ff8fc0'); gr.addColorStop(1, '#e6347f');
+        g.fillStyle = gr; heartPath(g, heart.size); g.fill();
+        g.shadowBlur = 0; g.fillStyle = 'rgba(255,255,255,.75)';
+        g.beginPath(); g.ellipse(-heart.size * .42, -heart.size * .42, heart.size * .2, heart.size * .11, -.7, 0, 6.283); g.fill();
+        g.restore();
+      }
+    }
+
+    g.globalCompositeOperation = 'lighter';
+    for (i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i];
+      p.age += dt;
+      if (p.age >= p.life) { parts.splice(i, 1); continue; }
+      var dr = Math.exp(-p.drag * dt);
+      p.vx *= dr; p.vy = p.vy * dr + p.grav * dt;
+      p.x += p.vx * dt; p.y += p.vy * dt; p.rot += p.vr * dt;
+      var l = 1 - p.age / p.life, tw = .55 + .45 * Math.sin(p.tw + p.age * p.tf);
+      var a = Math.min(1, l * 1.6) * (p.k === 'h' ? 1 : tw);
+      g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.globalAlpha = Math.max(0, a); g.fillStyle = p.c;
+      if (p.k === 's') { g.shadowColor = p.c; g.shadowBlur = 10 * u; sparkle(g, p.size * (.5 + .5 * l)); }
+      else if (p.k === 'd') { g.fillRect(-p.size / 2, -p.size / 2, p.size, p.size); }
+      else if (p.k === 'c') { g.beginPath(); g.arc(0, 0, p.size / 2, 0, 6.283); g.fill(); }
+      else { heartPath(g, p.size); g.fill(); }
+      g.restore();
+    }
+    for (i = flash.length - 1; i >= 0; i--) {
+      var f = flash[i]; f.age += dt;
+      if (f.age >= f.life) { flash.splice(i, 1); continue; }
+      var fq = f.age / f.life;
+      g.save(); g.globalAlpha = (1 - fq) * .8; g.strokeStyle = '#ffd6ea'; g.lineWidth = 3 * u * (1 - fq) + 1;
+      g.beginPath(); g.arc(f.x, f.y, (24 + 150 * fq) * u, 0, 6.283); g.stroke();
+      var rg = g.createRadialGradient(f.x, f.y, 0, f.x, f.y, 90 * u * (1 - fq * .4));
+      rg.addColorStop(0, 'rgba(255,255,255,.55)'); rg.addColorStop(1, 'rgba(255,150,210,0)');
+      g.globalAlpha = (1 - fq) * (1 - fq) * .8; g.fillStyle = rg; g.fillRect(f.x - 120 * u, f.y - 120 * u, 240 * u, 240 * u);
+      g.restore();
+    }
+    g.globalCompositeOperation = 'source-over';
+    if (parts.length > 900) parts.splice(0, parts.length - 900);
+  }
+
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min(.033, (now - last) / 1000);
+    last = now;
+    var rc = stage.getBoundingClientRect();
+    var sat = Math.max(60, rc.width * .12);
+    var pointerActive = havePointer && (now - lastMove < 3600);
+
+    updateKiss(now, dt);
+
+    // reads first (avoid layout thrash)
+    var faces = chars.map(function (c) { return center(c.face); });
+    chars.forEach(function (c) {
+      c.eyes.forEach(function (e) { var a = center(e.anchor); e.cx = a[0]; e.cy = a[1]; });
+    });
+
+    chars.forEach(function (c) {
+      c.eyes.forEach(function (e) {
+        if (pointerActive) look(e, px, py, sat);
+        else if (K.active) look(e, K.tx, K.ty, sat);
+        else { e.tx = 0; e.ty = .08; }
+      });
+    });
+
+    // writes
+    chars.forEach(function (c) {
+      var sumX = 0, sumY = 0;
+
+      // contact amount drives blush, smile and pupil size
+      var ct = K.smile;
+      c.contact += (ct - c.contact) * Math.min(1, dt * (ct ? 1.5 : 4));
+      c.pulse = Math.max(0, c.pulse - dt * 1.1);
+
+      // blink
+      var s = 1;
+      if (c.blinkStart < 0 && now > c.nextBlink) c.blinkStart = now;
+      if (c.blinkStart >= 0) {
+        var p = (now - c.blinkStart) / 190;
+        if (p >= 1) {
+          c.blinkStart = -1;
+          if (!c.dbl && r() < .16) { c.dbl = true; c.nextBlink = now + 120; }
+          else { c.dbl = false; c.nextBlink = now + 2400 + r() * 3800; }
+        } else {
+          var w = p < .38 ? p / .38 : (1 - p) / .62;
+          w = w * w * (3 - 2 * w);
+          s = 1 - .93 * w;
+        }
+      }
+      var wv = c.eyes.map(function (e) {
+        if (e.wink < 0) return 0;
+        var pw = (now - e.wink) / 460;
+        if (pw >= 1) { e.wink = -1; return 0; }
+        var ww = pw < .22 ? pw / .22 : pw < .62 ? 1 : (1 - pw) / .38;
+        return ww * ww * (3 - 2 * ww);
+      });
+
+      c.eyes.forEach(function (e, i) {
+        // spring toward target
+        var k = 240, damp = 23;
+        e.vx += ((e.tx * MX - e.x) * k - e.vx * damp) * dt;
+        e.vy += ((e.ty * MY - e.y) * k - e.vy * damp) * dt;
+        e.x += e.vx * dt; e.y += e.vy * dt;
+        e.x = Math.max(-MX * 1.08, Math.min(MX * 1.08, e.x));
+        e.y = Math.max(-MY * 1.1, Math.min(MY * 1.1, e.y));
+        var nx = e.x / MX, ny = e.y / MY;
+        sumX += nx; sumY += ny;
+
+        // pupil: breathes with distance, widens on eye contact, pinches on click
+        var f = Math.min(1, Math.hypot(e.tx, e.ty));
+        var pt = 1.06 - .12 * f + .1 * c.contact;
+        if (now < pressUntil) pt *= .82;
+        e.ps += (pt - e.ps) * Math.min(1, dt * 9);
+        e.pupil.setAttribute('rx', f2(38 * e.ps));
+        e.pupil.setAttribute('ry', f2(43 * e.ps));
+
+        // left eyes are mirrored, so flip x in their local space
+        var lx = e.m * e.x;
+        var sx = 1 - .09 * Math.abs(nx);
+        var pos = 'translate(' + f2(IX + lx) + ' ' + f2(IY + e.y) + ')';
+        e.iris.setAttribute('transform', pos + ' scale(' + sx.toFixed(3) + ' 1)');
+        e.core.setAttribute('transform', 'translate(' + f2(e.m * nx * 6) + ' ' + f2(ny * 5) + ')');
+        e.hi.setAttribute('transform', pos + ' scale(' + e.m + ' 1)');
+        e.hiIn.setAttribute('transform', 'translate(' + f2(-e.x * .32) + ' ' + f2(-e.y * .32) + ')');
+        e.brow.setAttribute('transform', 'translate(' + f2(e.m * nx * 8) + ' ' + f2(ny * 16 + 12 * e.winkAmt) + ') rotate(' + f2(e.m * nx * 1.4) + ' 300 0)');
+
+        // blink + wink (the other eye squints a touch during a wink)
+        var se = Math.min(s, 1 - .96 * wv[i], 1 - .14 * wv[1 - i]);
+        e.winkAmt = wv[i];
+        e.closed.setAttribute('opacity', f2(Math.max(0, Math.min(1, (1 - se - .55) * 2.6))));
+        if (se >= .999) e.blink.removeAttribute('transform');
+        else e.blink.setAttribute('transform', 'translate(0 ' + PIV + ') scale(1 ' + se.toFixed(3) + ') translate(0 ' + (-PIV) + ')');
+      });
+
+      // blush and smile
+      var bl = c.cfg.b0 + (c.cfg.b1 - c.cfg.b0) * Math.min(1, c.contact * 1.1) + .4 * c.pulse;
+      c.blush.setAttribute('opacity', f2(Math.min(1.2, bl + .45 * K.mouth)));
+      var sm = Math.max(c.contact * c.contact, c.pulse);
+      var open = 1 - K.mouth;
+      c.mouthB.setAttribute('opacity', f2(sm * c.cfg.smile * open));
+      c.mouthA.setAttribute('opacity', f2((1 - sm * c.cfg.smile) * open));
+      c.mouthK.setAttribute('opacity', f2(K.mouth));
+      c.mouthK.setAttribute('transform', 'translate(0 148) scale(' + f2(.85 + .25 * K.mouth + .18 * K.push) + ')');
+
+      // head, hair and body motion
+      if (!reduce) {
+        var ax = sumX / 2, ay = sumY / 2;
+        var br = Math.sin(now / 1000 * 1.7 + c.phase) * 1.5;
+        var kh = Math.min(1, dt * 6), kb = Math.min(1, dt * 3);
+        c.hx += (ax * 9 + K.tilt * 6 - c.hx) * kh; c.hy += (ay * 6 - K.mouth * 5 - c.hy) * kh; c.rot += (ax * 2.4 + K.tilt * 5 - c.rot) * kh;
+        c.bx += (c.hx - c.bx) * kb; c.by += (c.hy - c.by) * kb; c.brot += (c.rot - c.brot) * kb;
+        c.head.setAttribute('transform', 'translate(' + f2(c.hx) + ' ' + f2(c.hy + br) + ') rotate(' + f2(c.rot) + ' 0 190)');
+        c.hairBack.setAttribute('transform', 'translate(' + f2(c.bx * .6) + ' ' + f2(c.by * .6 + br) + ') rotate(' + f2(c.brot * .6) + ' 0 190)');
+        c.body.setAttribute('transform', 'translate(0 ' + f2(br * .5) + ')');
+        var ang = Math.sin(now / 620 + c.phase) * 3 + (c.hx - c.bx) * .5;
+        c.ahoge.setAttribute('transform', 'rotate(' + f2(ang) + ' ' + c.cfg.ahoge + ')');
+      }
+    });
+
+    drawFX(now, dt);
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+
+</script>
+</body>
+</html>

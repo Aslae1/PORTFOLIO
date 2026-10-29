@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Asmita Lamichhane - Web Developer and UI/UX Designer</title>
+  <meta name="description"
+    content="Portfolio of Asmita Lamichhane, a BSc.CSIT student who designs and builds creative, thoughtful websites.">
+  <meta name="theme-color" content="#bfe3f7">
+  <meta property="og:title" content="Asmita Lamichhane - Web Developer and UI/UX Designer">
+  <meta property="og:description" content="BSc.CSIT student building creative websites, computer-vision prototypes and playful interactive experiences.">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8C%B8%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..700,0..100;1,9..144,300..700,0..100&family=Figtree:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <a class="skip" href="#about">Skip to content</a>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="loader" id="loader" role="status">
+    <div class="glass loader-card">
+      <p class="loader-title">Opening the meadow</p>
+      <div class="loader-bar"><span id="loaderBar"></span></div>
+    </div>
+  </div>
+  <svg class="flutter" id="flutter" viewBox="0 0 64 48" aria-hidden="true">
+    <g class="wing wl">
+      <path d="M32 24C22 4 6 2 3 12c-2 9 9 15 29 12Z" fill="url(#wg)" />
+      <path d="M32 25C20 28 10 36 15 43c5 5 15-3 17-18Z" fill="url(#wg2)" />
+    </g>
+    <g class="wing wr">
+      <path d="M32 24C42 4 58 2 61 12c2 9-9 15-29 12Z" fill="url(#wg)" />
+      <path d="M32 25c12 3 22 11 17 18-5 5-15-3-17-18Z" fill="url(#wg2)" />
+    </g>
+    <rect x="31" y="14" width="2" height="26" rx="1" fill="#1d3a2f" />
+    <defs>
+      <linearGradient id="wg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#5fd0ff" />
+        <stop offset="1" stop-color="#3b6fe0" />
+      </linearGradient>
+      <linearGradient id="wg2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#7fe3d6" />
+        <stop offset="1" stop-color="#4f8cf0" />
+      </linearGradient>
+    </defs>
+  </svg>
+  <header class="nav-wrap">
+    <nav class="glass nav" aria-label="Main">
+      <a class="brand" href="#top" aria-label="Asmita, back to top">Asmita</a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="navList">Menu</button>
+      <ul id="navList">
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#journey">Journey</a></li>
+        <li><a href="#fun">Creative</a></li>
+        <li><a href="resume.html">Resume</a></li>
+        <li><button class="theme-toggle nav-theme" id="themeToggle" type="button" aria-label="Switch to dark mode" aria-pressed="false"><span class="theme-icon" aria-hidden="true">☾</span><span class="theme-label">Dark mode</span></button></li>
+        <li><a href="#contact" class="nav-cta">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main id="top">
+    <section class="panel hero" id="hero">
+      <div class="glass card hero-card">
+        <p class="tag">BSc.CSIT · 6th semester</p>
+        <h1>I'm Asmita. I design and build websites that feel alive.</h1>
+        <p class="lead">A CSIT student exploring front-end development, UI/UX and interactive experiences — from
+          practical tools to playful digital stories.</p>
+        <div class="actions">
+          <a class="btn primary" href="#projects">View my work</a>
+          <a class="btn ghost" data-resume-view href="resume.html">View resume</a>
+          <a class="btn ghost" data-resume-download href="Asmita-Lamichhane-CV.pdf"
+            download="Asmita-Lamichhane-CV.pdf">Download CV</a>
+          <a class="btn ghost" data-link="github" target="_blank" rel="noopener">GitHub</a>
+        </div>
+        <ul class="hero-meta" aria-label="Quick facts">
+          <li>1st place, KOPILA hackathon</li>
+          <li>5 featured projects</li>
+          <li>Kathmandu, Nepal</li>
+        </ul>
+      </div>
+      <p class="scroll-hint glass"><span class="dot"></span>Scroll to explore</p>
+    </section>
+    <section class="panel" id="about">
+      <div class="glass card about-card reveal">
+        <h2>Design-minded developer, curious by nature</h2>
+        <p>I’m a BSc.CSIT student in my 6th semester who enjoys connecting visual design with working code. I like exploring how people move through an interface, then shaping the layout and interactions to make that experience feel clearer.</p>
+        <p>My work ranges from client websites and a drawing-recognition model to an air-writing prototype and interactive storytelling. I learn fastest by building something, breaking it, and fixing it with teammates.</p>
+        <p>Outside of class I build manga-style characters in code, experiment with 3D in Blender and write digital content.</p>
+        <dl class="facts">
+          <div><dt>Studying</dt><dd>BSc.CSIT, 6th semester, Tribhuvan University</dd></div>
+          <div><dt>Focus</dt><dd>Creative front-end, UI/UX and computer vision</dd></div>
+          <div><dt>Languages</dt><dd>Nepali (native), English (professional)</dd></div>
+          <div><dt>Based in</dt><dd>Kathmandu, Nepal</dd></div>
+          <div><dt>Looking for</dt><dd>Internships and design-minded dev roles</dd></div>
+        </dl>
+      </div>
+    </section>
+    <section class="panel wide" id="skills">
+      <div class="glass card skills-card skills-wide reveal">
+        <h2>What I work with</h2>
+        <div class="skill-groups">
+          <div class="group"><h3>UX</h3><ul class="chips"><li>User flows</li><li>Wireframing</li><li>Prototyping</li><li>Usability thinking</li></ul></div>
+          <div class="group"><h3>UI</h3><ul class="chips"><li>Typography</li><li>Visual hierarchy</li><li>Colour</li><li>Responsive design</li><li>Glassmorphism and motion</li><li>And-Many more</li></ul></div>
+          <div class="group"><h3>Programming</h3><ul class="chips"><li>Python</li><li>JavaScript</li><li>C</li><li>C#</li><li>PHP</li></ul></div>
+          <div class="group"><h3>Web</h3><ul class="chips"><li>HTML</li><li>CSS</li><li>Responsive UI</li><li>.NET / ASP.NET basics</li></ul></div>
+          <div class="group"><h3>AI and computer vision</h3><ul class="chips"><li>Neural networks</li><li>TensorFlow</li><li>OpenCV</li><li>MediaPipe</li></ul></div>
+          <div class="group"><h3>Data and backend</h3><ul class="chips"><li>MySQL</li><li>PostgreSQL</li><li>Firebase</li></ul></div>
+          <div class="group"><h3>Tools</h3><ul class="chips"><li>Git and GitHub</li><li>VS Code</li><li>XAMPP</li></ul></div>
+          <div class="group"><h3>Creative</h3><ul class="chips"><li>Blender</li><li>3D fundamentals</li><li>Manga-style characters</li></ul></div>
+        </div>
+      </div>
+    </section>
+    <section class="panel wide" id="projects">
+      <div class="glass card projects-head reveal">
+        <h2>Featured projects</h2>
+        <p>Two client websites, an academic machine-learning model, a global hackathon story and a computer-vision prototype. Each one has a case study with the goal, my part in it and what I learned.</p>
+      </div>
+      <div class="project-grid featured" id="featuredGrid"></div>
+    </section>
+    <section class="panel wide" id="journey">
+      <div class="glass card projects-head reveal">
+        <h2>Education and achievements</h2>
+        <p>Where I study, and the hackathons that taught me to ship ideas fast with a team.</p>
+      </div>
+      <div class="duo">
+        <div class="glass card reveal">
+          <h3 class="duo-title">Education</h3>
+          <ol class="timeline">
+            <li><strong>B.Sc. CSIT, 6th semester</strong><span>Asian School of Management and Technology, affiliated with Tribhuvan University</span></li>
+            <li><strong>SEE, GPA 3.85</strong><span>Tarun Madhyamik Vidhyalaya</span></li>
+            <li><strong>SLC, GPA 3.66</strong><span>Him Rashmi High School</span></li>
+          </ol>
+        </div>
+        <div class="glass card reveal">
+          <h3 class="duo-title">Hackathons and competitions</h3>
+          <ul class="awards">
+            <li><span class="medal">1st</span><div><strong>KOPILA, youth skills EdTech platform</strong><span>First place among about 30 teams, January 2025. Product ideas, UI design, user flow and build for a platform teaching children time management, personal finance and soft skills.</span></div></li>
+            <li><span class="medal">2nd</span><div><strong>College hackathon</strong><span>Second place with my team. Regular practice in fast prototyping, teamwork and presenting.</span></div></li>
+            <li><span class="medal">Intl</span><div><strong>The Glitch, Solana hackathon</strong><span>My first international hackathon, where I worked in a global team on The Last Glitch.</span></div></li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel wide" id="fun">
+      <div class="glass card projects-head reveal">
+        <h2>Fun projects & creative experiments</h2>
+        <p>Small creative coding projects, flower and heart drawings, manga characters and playful interactions. These are the projects I make just for fun, and they live in my Vibe-Projects repository on GitHub.</p>
+        <div class="actions"><a class="btn ghost" href="https://github.com/Aslae1/Vibe-Projects-" target="_blank" rel="noopener">Browse Vibe-Projects on GitHub</a></div>
+      </div>
+      <div class="fun-grid" id="funGrid"></div>
+    </section>
+    <section class="panel" id="process">
+      <div class="glass card process-card reveal">
+        <h2>How I design a page</h2>
+        <ol class="steps" id="steps">
+          <li>
+            <h3>Discover</h3>
+            <p>Who is this for, and what do they need to get done? I start with the brief, the audience and a few real examples.</p>
+          </li>
+          <li>
+            <h3>Define</h3>
+            <p>Turn what I learned into one clear problem to solve and a short list of what the page must do.</p>
+          </li>
+          <li>
+            <h3>Design</h3>
+            <p>Sketch, wireframe, then pick colour, type and spacing as one small system.</p>
+          </li>
+          <li>
+            <h3>Deliver</h3>
+            <p>Build it, test it on a phone, check keyboard and contrast, and change what feels awkward.</p>
+          </li>
+        </ol>
+      </div>
+    </section>
+    <section class="panel" id="contact">
+      <div class="glass card contact-card reveal">
+        <h2>Let's make something together</h2>
+        <p class="open-to"><span class="dot"></span><span id="openTo"></span></p>
+        <p>Have an idea, a project or an opening? Write to me and I'll reply soon.</p>
+        <div class="mail-row">
+          <a class="btn primary" id="mailBtn" href="#">Email me</a>
+          <button class="btn ghost" id="copyBtn" type="button">Copy email address</button>
+          <a class="btn ghost" data-resume-download href="Asmita-Lamichhane-CV.pdf"
+            download="Asmita-Lamichhane-CV.pdf">Download CV</a>
+        </div>
+        <p class="mail-text" id="mailText"></p>
+        <ul class="contact-details">
+          <li><a id="phoneLink" href="#"><span id="phoneText"></span></a></li>
+          <li><span id="placeText"></span></li>
+        </ul>
+        <ul class="socials" id="socials">
+          <li><a data-link="github" target="_blank" rel="noopener">GitHub: Aslae1</a></li>
+          <li><a data-link="linkedin" target="_blank" rel="noopener">LinkedIn</a></li>
+                  </ul>
+      </div>
+      <footer class="glass foot">Designed and coded by Asmita Lamichhane, <span id="year"></span></footer>
+    </section>
+
+  </main>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Artwork preview"><button class="lb-close" id="lbClose"
+      type="button" aria-label="Close preview">Close</button><img id="lbImg" alt="">
+    <p id="lbCap"></p>
+  </dialog>
+  <noscript>
+    <p class="glass noscript">This page uses JavaScript to show projects and the scrolling background. Please turn it on, or see my resume and GitHub for the full details.</p>
+  </noscript>
+  <script src="script.js"></script>
+</body>
+
+</html>
